@@ -1,20 +1,18 @@
 pipeline {
     agent any
 
-    stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
+    environment {
+        PATH = "C:\\Users\\suhai\\AppData\\Local\\Programs\\Python\\Python314;C:\\Users\\suhai\\AppData\\Local\\Programs\\Python\\Python314\\Scripts;${env.PATH}"
+    }
 
+    stages {
         stage('Setup & Install Dependencies') {
             steps {
                 bat '''
                     python -m venv venv
                     call venv\\Scripts\\activate.bat
                     python -m pip install --upgrade pip
-                    pip install -r requirements.txt
+                    pip install -r requirment.txt
                 '''
             }
         }
@@ -23,7 +21,7 @@ pipeline {
             steps {
                 bat '''
                     call venv\\Scripts\\activate.bat
-                    pytest
+                    python app.py
                 '''
             }
         }
@@ -31,7 +29,6 @@ pipeline {
 
     post {
         always {
-            // Clean up virtual environment after execution
             bat 'if exist venv rmdir /s /q venv'
         }
     }
